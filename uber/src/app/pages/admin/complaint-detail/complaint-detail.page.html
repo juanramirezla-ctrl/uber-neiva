@@ -1,0 +1,50 @@
+<ion-content>
+  <div class="client-page">
+    <a class="back" routerLink="/admin/complaints">‹ Quejas</a>
+
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    } @else if (inc(); as i) {
+      <div class="topbar">
+        <h2 class="sheet-title" style="margin: 0">Queja #{{ i.id }}</h2>
+        <span [class]="'badge ' + (done() ? 'active' : 'warn')">{{ done() ? 'Resuelta' : 'Pendiente' }}</span>
+      </div>
+
+      <div class="card">
+        <div class="person-label">Reportante</div>
+        <div class="person">
+          <div class="avatar sm">{{ i.reporter.charAt(0) }}</div>
+          <div><b>{{ i.reporter }}</b><small>Pasajero</small></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="person-label">Reportado</div>
+        <div class="person">
+          <div class="avatar sm">{{ i.reported.charAt(0) }}</div>
+          <div><b>{{ i.reported }}</b><small>Conductor</small></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="person-label">Motivo</div>
+        <b>{{ i.motive }}</b>
+        <p class="muted" style="margin: 6px 0 0">{{ i.detail }}</p>
+        @if (i.date) {
+          <p class="muted" style="margin: 6px 0 0">{{ dateLabel(i.date) }}</p>
+        }
+      </div>
+
+      <div class="btn-stack">
+        <ion-button expand="block" [disabled]="busy()" (click)="penalize()">Penalizar usuario</ion-button>
+        <ion-button expand="block" color="danger" [disabled]="busy()" (click)="remove()">Eliminar usuario</ion-button>
+        <ion-button expand="block" fill="outline" color="medium" [disabled]="done()" (click)="resolve()">
+          Marcar como resuelta
+        </ion-button>
+      </div>
+      <p class="note">Eliminar pedirá confirmación antes de borrar la cuenta.</p>
+    } @else {
+      <p class="muted">No se encontró la queja.</p>
+    }
+  </div>
+</ion-content>

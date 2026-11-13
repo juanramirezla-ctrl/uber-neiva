@@ -1,0 +1,40 @@
+<ion-content>
+  <div class="client-page">
+    <a routerLink="/driver/vehicles" style="font-size: 13px; color: #888; text-decoration: none">‹ Volver</a>
+    <h2 style="font-size: 22px; font-weight: 700; margin: 8px 0 4px">
+      {{ editingId ? 'Editar vehículo' : 'Nuevo vehículo' }}
+    </h2>
+
+    <form class="vf" [formGroup]="form" (ngSubmit)="save()">
+      <label>Marca</label>
+      <input class="field" formControlName="brand" placeholder="Chevrolet" />
+
+      <label>Modelo</label>
+      <input class="field" formControlName="model" placeholder="Spark" />
+
+      <div class="two">
+        <div>
+          <label>Año</label>
+          <input class="field" type="number" formControlName="year" />
+        </div>
+        <div>
+          <label>Placa</label>
+          <input class="field" formControlName="plate" placeholder="ABC123" style="text-transform: uppercase" />
+        </div>
+      </div>
+
+      <label>Color</label>
+      <input class="field" formControlName="color" placeholder="Blanco" />
+
+      <label class="check">
+        <input type="checkbox" formControlName="active" />
+        Usar como vehículo activo
+      </label>
+
+      <ion-button expand="block" type="submit">Guardar vehículo</ion-button>
+      <ion-button expand="block" fill="outline" color="medium" type="button" (click)="cancel()">
+        Cancelar
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,45 @@
+/* ---------- Administrador y quejas ---------- */
+.badge.warn { background: #fff1d0; color: #b9801a; }
+.badge.danger { background: #fde2e8; color: #d1204a; }
+
+.avatar-btn { border: 0; cursor: pointer; font: inherit; }
+
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.stat { border: 1px solid #e6e6e6; border-radius: 14px; padding: 12px 14px; }
+.stat small { display: block; color: #888; font-size: 12px; }
+.stat b { display: block; font-size: 26px; font-weight: 700; margin-top: 2px; }
+.stat b.red { color: #e5214f; }
+
+.qa { display: flex; align-items: center; gap: 10px; border: 1px solid #e6e6e6; border-radius: 14px; padding: 14px; margin-bottom: 8px; color: #111; text-decoration: none; }
+.qa > div { flex: 1; }
+.qa b { display: block; font-size: 14px; }
+.qa small { display: block; color: #888; font-size: 12px; }
+.qa .count { background: #fde2e8; color: #d1204a; border-radius: 999px; min-width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; padding: 0 6px; }
+.qa .chev { color: #aaa; font-size: 18px; }
+
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+.kv:last-child { border-bottom: 0; }
+.kv span:first-child { color: #777; }
+.kv span:last-child { text-align: right; font-weight: 600; word-break: break-word; }
+
+.chips { display: flex; gap: 8px; overflow-x: auto; margin: 10px 0; padding-bottom: 2px; }
+.chip-btn { border: 0; background: var(--field-bg); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #333; cursor: pointer; white-space: nowrap; }
+.chip-btn.on { background: #111; color: #fff; }
+
+.user-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+.user-row .info { flex: 1; min-width: 0; }
+.user-row .info b { display: block; font-size: 14px; }
+.user-row .info small { display: block; color: #888; font-size: 12px; }
+.detail { background: var(--field-bg); border-radius: 12px; padding: 4px 12px 12px; margin: 6px 0 8px; font-size: 13px; }
+.detail .kv { font-size: 13px; border-color: #e3e5e8; }
+
+.sheet-title { font-size: 22px; font-weight: 700; margin: 4px 0 8px; }
+.back { font-size: 13px; color: #888; text-decoration: none; display: inline-block; margin-bottom: 4px; }
+.note { font-size: 11px; color: #888; text-align: center; margin-top: 8px; }
+.btn-stack ion-button { margin-bottom: 8px; }
+.mini-link { font-size: 12px; font-weight: 600; color: #e5214f; text-decoration: underline; background: none; border: 0; cursor: pointer; padding: 0; margin-top: 4px; }
+.row-end { display: flex; flex-direction: column; align-items: flex-end; }
+.person { display: flex; align-items: center; gap: 12px; }
+.person small { display: block; color: #888; font-size: 12px; }
+.person b { display: block; }
+.person-label { font-size: 11px; color: #888; margin-bottom: 6px; }

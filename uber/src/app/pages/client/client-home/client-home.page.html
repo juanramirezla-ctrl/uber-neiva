@@ -1,0 +1,136 @@
+<ion-content>
+  <div class="client-page">
+    <div class="topbar">
+      <div>
+        <h2>Hola, {{ firstName() }}</h2>
+        <small>Neiva, Huila</small>
+      </div>
+      <div class="avatar">{{ initial() }}</div>
+    </div>
+
+    @if (pickMode(); as m) {
+      <div class="pick-banner">
+        <span>Toca el mapa para elegir {{ m === 'origin' ? 'el origen' : 'el destino' }}</span>
+        <button type="button" (click)="pickMode.set(null)">Cancelar</button>
+      </div>
+    }
+
+    <div class="map-box" [class.picking]="pickMode() !== null">
+      <app-trip-map
+        [origin]="mapOrigin()"
+        [destination]="mapDestination()"
+        [driver]="driverPos()"
+        [route]="mapRoute()"
+        (mapClick)="onMapClick($event)"
+      ></app-trip-map>
+    </div>
+
+    @if (showRating()) {
+      <div class="card">
+        <div class="status">¡Llegaste a tu destino!</div>
+        <p class="muted">Califica a tu conductor</p>
+        <div class="stars">
+          @for (s of [1, 2, 3, 4, 5]; track s) {
+            <button type="button" [class.on]="s <= stars()" (click)="stars.set(s)">★</button>
+          }
+        </div>
+        <textarea
+          class="field"
+          rows="3"
+          placeholder="Comentario (opcional)"
+          (input)="comment = $any($event.target).value"
+        ></textarea>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; margin: 6px 0 10px">
+  <input type="checkbox" (change)="incident = $any($event.target).checked" />
+  Hubo un problema con este viaje
+</label>
+        <ion-button expand="block" (click)="sendRating()">Enviar calificación</ion-button>
+        <ion-button expand="block" fill="clear" color="medium" (click)="closeRating()">
+          Omitir
+        </ion-button>
+      </div>
+    } @else if (active(); as a) {
+      <div class="card">
+        <div class="status">{{ statusText() }}</div>
+
+        @if (a.driver; as d) {
+          <div class="driver-row">
+            <div class="avatar sm">{{ d.user.name.charAt(0) }}</div>
+            <div>
+              <b>{{ d.user.name }}</b>
+              <small>★ {{ d.rating_average }} · {{ d.user.phone }}</small>
+            </div>
+          </div>
+        }
+        @if (a.vehicle; as v) {
+          <div class="vehicle">{{ v.brand }} {{ v.model }} · {{ v.plate }} · {{ v.color }}</div>
+        }
+
+        <div class="estimate">
+          <span>Tarifa estimada</span>
+          <b>{{ money(a.estimated_fare) }}</b>
+        </div>
+
+        @if (canCancel()) {
+          <ion-button expand="block" color="danger" fill="outline" (click)="cancel()">
+            Cancelar viaje
+          </ion-button>
+        }
+      </div>
+    } @else {
+      <div class="card">
+        <div class="route-box">
+          <div class="rb-icons"><span class="rb-dot"></span><span class="rb-line"></span><span class="rb-sq"></span></div>
+          <div class="rb-rows">
+            <button type="button" class="rb-row" [class.ph]="!origin()" (click)="openPlanner('origin')">
+              {{ origin()?.name ?? 'Origen' }}
+            </button>
+            <button type="button" class="rb-row" [class.ph]="!destination()" (click)="openPlanner('destination')">
+              {{ destination()?.name ?? '¿A dónde vas?' }}
+            </button>
+          </div>
+        </div>
+
+        @if (estimate(); as e) {
+          <div class="estimate">
+            <span>{{ e.distance_km }} km · {{ e.duration_min }} min</span>
+            <b>{{ money(e.estimated_fare) }}</b>
+          </div>
+        }
+
+        <ion-button expand="block" [disabled]="!estimate() || busy()" (click)="request()">
+          {{ busy() ? 'Solicitando...' : 'Solicitar viaje' }}
+        </ion-button>
+      </div>
+    }
+
+    <h3 class="section">Viajes recientes</h3>
+    @for (t of trips(); track t.id) {
+      <div class="trip-row">
+        <div>
+          <b>{{ t.destination_name ?? 'Viaje #' + t.id }}</b>
+          <small>{{ dateLabel(t.completed_at) }}</small>
+        </div>
+        <b>{{ money(t.final_fare) }}</b>
+      </div>
+    } @empty {
+      <p class="muted">Aún no tienes viajes.</p>
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-client-tabs></app-client-tabs>
+</ion-footer>
+
+@if (planner(); as f) {
+  <app-trip-planner
+    [origin]="origin()"
+    [destination]="destination()"
+    [startField]="f"
+    (picked)="onPlannerPick($event)"
+    (gps)="onPlannerGps()"
+    (pickOnMap)="onPlannerMap($event)"
+    (closed)="closePlanner()"
+  ></app-trip-planner>
+}

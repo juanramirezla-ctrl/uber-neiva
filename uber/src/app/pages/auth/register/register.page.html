@@ -1,0 +1,57 @@
+<ion-content>
+  <div class="auth-page">
+    <a routerLink="/login" style="font-size: 13px; color: #888; text-decoration: none">‹ Volver</a>
+    <h1>Crea tu cuenta</h1>
+
+    <label>Quiero registrarme como</label>
+    <div class="role-picker">
+      <button type="button" class="role-card" [class.selected]="role === 'client'" (click)="setRole('client')">
+        <b>Pasajero</b><small>Pide viajes</small>
+      </button>
+      <button type="button" class="role-card" [class.selected]="role === 'driver'" (click)="setRole('driver')">
+        <b>Conductor</b><small>Ofrece viajes</small>
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>Nombre completo</label>
+      <ion-input formControlName="name" placeholder="Laura Gómez"></ion-input>
+
+      <label>Correo electrónico</label>
+      <ion-input formControlName="email" type="email" placeholder="correo@ejemplo.com"></ion-input>
+
+      <label>Teléfono</label>
+      <ion-input formControlName="phone" type="tel" placeholder="300 000 0000"></ion-input>
+
+      <label>Contraseña</label>
+      <ion-input formControlName="password" type="password" placeholder="Mínimo 8 caracteres"></ion-input>
+
+      @if (role === 'driver') {
+        <label>Número de licencia</label>
+        <ion-input formControlName="license_number" placeholder="LC-88291-CO"></ion-input>
+
+        <label>Marca</label>
+        <ion-input formControlName="brand" placeholder="Chevrolet"></ion-input>
+
+        <label>Modelo</label>
+        <ion-input formControlName="model" placeholder="Spark"></ion-input>
+
+        <label>Placa</label>
+        <ion-input formControlName="plate" placeholder="ABC123"></ion-input>
+
+        <label>Año</label>
+        <ion-input formControlName="year" type="number"></ion-input>
+
+        <label>Capacidad (pasajeros)</label>
+        <ion-input formControlName="capacity" type="number"></ion-input>
+
+        <label>Color</label>
+        <ion-input formControlName="color" placeholder="Blanco"></ion-input>
+      }
+
+      <ion-button expand="block" type="submit" [disabled]="loading" style="margin-top: 20px">
+        {{ loading ? 'Creando...' : 'Crear cuenta' }}
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

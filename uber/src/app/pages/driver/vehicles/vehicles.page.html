@@ -1,0 +1,34 @@
+<ion-content>
+  <div class="client-page">
+    <div class="topbar">
+      <h2>Mis vehículos</h2>
+      <button type="button" class="btn-add" (click)="add()">+ Agregar</button>
+    </div>
+
+    @for (v of vehicles(); track v.id) {
+      <div class="card">
+        <div class="veh-top">
+          <div>
+            <b>{{ v.brand }} {{ v.model }} {{ v.year }}</b>
+            <small>Placa {{ v.plate }} · {{ v.color }}</small>
+          </div>
+          <span class="badge" [class.active]="v.active">{{ v.active ? 'Activo' : 'Inactivo' }}</span>
+        </div>
+        <div class="btn-row">
+          <ion-button color="light" (click)="edit(v)">Editar</ion-button>
+          <ion-button color="danger" (click)="remove(v)">Eliminar</ion-button>
+        </div>
+      </div>
+    } @empty {
+      <p class="muted">Aún no tienes vehículos registrados. Toca “+ Agregar”.</p>
+    }
+
+    @if (saved()) {
+      <div class="success-banner">Vehículo guardado con éxito</div>
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-driver-tabs></app-driver-tabs>
+</ion-footer>

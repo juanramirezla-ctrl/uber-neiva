@@ -1,0 +1,30 @@
+<ion-content>
+  <div class="auth-page">
+    <span class="logo-pill">Uber Neiva</span>
+    <h1>Bienvenido de nuevo</h1>
+    <p class="sub">Inicia sesión para pedir o realizar viajes en Neiva.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>Correo electrónico o teléfono</label>
+      <ion-input formControlName="login" type="text" placeholder="correo@ejemplo.com"></ion-input>
+
+      <label>Contraseña</label>
+      <ion-input formControlName="password" type="password" placeholder="••••••••"></ion-input>
+      <a routerLink="/forgot-password" style="display: block; text-align: right; font-size: 12px; color: #555; margin-top: 6px">
+  ¿Olvidaste tu contraseña?
+</a>
+
+      <ion-button expand="block" type="submit" [disabled]="loading" style="margin-top: 20px">
+        {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+      </ion-button>
+    </form>
+
+    <p style="text-align: center; font-size: 14px; margin-top: 16px">
+      ¿No tienes cuenta? <a routerLink="/register"><b>Regístrate</b></a>
+    </p>
+
+    <div class="info-box">
+      Al ingresar, la app te lleva a tu vista según tu rol: Pasajero, Conductor o Administrador.
+    </div>
+  </div>
+</ion-content>

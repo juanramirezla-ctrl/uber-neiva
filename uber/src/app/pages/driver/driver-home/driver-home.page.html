@@ -1,0 +1,122 @@
+<ion-content>
+  <div class="client-page">
+    <div class="topbar">
+      <div>
+        <h2>Hola, {{ firstName() }}</h2>
+        <small>Conductor · Neiva</small>
+      </div>
+      <button type="button" class="pill" [class.on]="online()" [disabled]="busy()" (click)="toggle()">
+        {{ online() ? 'En línea' : 'Desconectado' }}
+      </button>
+    </div>
+
+    <div class="map-box">
+      <app-trip-map
+        [origin]="mapOrigin()"
+        [destination]="mapDestination()"
+        [driver]="me()"
+        [route]="mapRoute()"
+      ></app-trip-map>
+    </div>
+
+    @if (trip(); as t) {
+      <div class="card">
+        <div class="status">{{ tripText() }}</div>
+
+        <div class="driver-row">
+          <div class="avatar sm">{{ (t.request.client?.name ?? 'P').charAt(0) }}</div>
+          <div>
+            <b>{{ t.request.client?.name ?? 'Pasajero' }}</b>
+            @if (t.request.client?.phone; as ph) {
+              <small>{{ ph }}</small>
+            }
+          </div>
+        </div>
+
+        <div class="vehicle">
+          <small>Recoger en</small>
+          <b>{{ t.request.origin_name }}</b>
+          <small style="margin-top: 8px">Destino</small>
+          <b>{{ t.request.destination_name }}</b>
+        </div>
+
+        <div class="estimate">
+          <span>Tarifa estimada</span>
+          <b>{{ money(t.estimated_fare) }}</b>
+        </div>
+
+        <ion-button
+          expand="block"
+          [color]="t.status === 'in_progress' ? 'success' : 'primary'"
+          [disabled]="busy()"
+          (click)="advance()"
+        >
+          {{ actionLabel() }}
+        </ion-button>
+      </div>
+      
+        } @else if (blocked()) {
+      <div class="card">
+        <div class="status">Cuenta no habilitada</div>
+        <p class="muted">{{ blockedText() }}</p>
+        <ion-button expand="block" [disabled]="busy()" (click)="toggle()">Volver a intentar</ion-button>
+      </div>
+    } @else if (!online()) {
+      <div class="card">
+        <div class="status">Estás desconectado</div>
+        <p class="muted">Conéctate para recibir solicitudes de viaje.</p>
+        <ion-button expand="block" [disabled]="busy()" (click)="toggle()">Conectarme</ion-button>
+      </div>
+    } @else if (current(); as r) {
+      <div class="card">
+        <div class="req-head">
+          <b>Nueva solicitud</b>
+          <span class="chip">{{ r.estimated_distance_km }} km</span>
+        </div>
+
+        <div class="driver-row">
+          <div class="avatar sm">{{ (r.client?.name ?? 'P').charAt(0) }}</div>
+          <div>
+            <b>{{ r.client?.name ?? 'Pasajero' }}</b>
+            <small>{{ r.origin_name }} → {{ r.destination_name }}</small>
+          </div>
+        </div>
+
+        <div class="estimate">
+          <span>Tarifa estimada</span>
+          <b>{{ money(r.estimated_fare) }}</b>
+        </div>
+
+        <div class="btn-row">
+          <ion-button color="light" (click)="reject(r)">Rechazar</ion-button>
+          <ion-button color="success" [disabled]="busy()" (click)="accept(r)">Aceptar</ion-button>
+        </div>
+
+        @if (requests().length > 1) {
+          <p class="muted">Hay {{ requests().length - 1 }} solicitud(es) más en espera.</p>
+        }
+      </div>
+    } @else {
+      <div class="card">
+        <div class="status">Esperando solicitudes…</div>
+        <p class="muted">Mantén esta pantalla abierta. Te avisamos cuando llegue una.</p>
+      </div>
+    }
+
+    <a class="card vehicle-link" routerLink="/driver/vehicles">
+      <div>
+        <small>Mi vehículo</small>
+        @if (vehicle(); as v) {
+          <b>{{ v.brand }} {{ v.model }} · {{ v.plate }}</b>
+        } @else {
+          <b>Sin vehículo registrado</b>
+        }
+      </div>
+      <span>Ver ›</span>
+    </a>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-driver-tabs></app-driver-tabs>
+</ion-footer>

@@ -1,0 +1,22 @@
+<ion-content>
+  <div class="client-page">
+    <h2 style="font-size: 22px; font-weight: 700">Perfil</h2>
+
+    <div class="card" style="display: flex; gap: 12px; align-items: center">
+      <div class="avatar">{{ (auth.user()?.name ?? '?').charAt(0).toUpperCase() }}</div>
+      <div>
+        <b>{{ auth.user()?.name }}</b>
+        <small style="display: block; color: #888">{{ auth.user()?.email }}</small>
+        <small style="display: block; color: #888">{{ auth.user()?.phone }}</small>
+      </div>
+    </div>
+
+    <ion-button expand="block" color="danger" fill="outline" (click)="auth.logout()">
+      Cerrar sesión
+    </ion-button>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-client-tabs></app-client-tabs>
+</ion-footer>

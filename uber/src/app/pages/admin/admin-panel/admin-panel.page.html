@@ -1,0 +1,75 @@
+<ion-content>
+  <div class="client-page">
+    <div class="topbar">
+      <div>
+        <h2>Panel de moderación</h2>
+        <small>Administrador</small>
+      </div>
+      <button type="button" class="avatar avatar-btn" (click)="askLogout()">{{ initial() }}</button>
+    </div>
+
+    @if (failed()) {
+      <div class="card">
+        <p class="muted">No se pudo cargar el panel. Revisa tu conexión con el servidor.</p>
+        <ion-button expand="block" (click)="load()">Reintentar</ion-button>
+      </div>
+    }
+
+    <div class="stat-grid">
+      <div class="stat"><small>Usuarios</small><b>{{ usersTotal() }}</b></div>
+      <div class="stat"><small>Quejas pendientes</small><b class="red">{{ pendingComplaints() }}</b></div>
+      <div class="stat"><small>Conductores</small><b>{{ stats()?.total_drivers ?? 0 }}</b></div>
+      <div class="stat"><small>Pasajeros</small><b>{{ stats()?.total_clients ?? 0 }}</b></div>
+    </div>
+
+    <h3 class="section">Acciones rápidas</h3>
+
+    <a class="qa" routerLink="/admin/complaints">
+      <div><b>Gestionar quejas</b><small>Revisa y sanciona usuarios</small></div>
+      @if (pendingComplaints() > 0) {
+        <span class="count">{{ pendingComplaints() }}</span>
+      }
+      <span class="chev">›</span>
+    </a>
+    <a class="qa" routerLink="/admin/users">
+      <div><b>Ver usuarios</b><small>Conductores y pasajeros</small></div>
+      <span class="chev">›</span>
+    </a>
+    <a class="qa" routerLink="/admin/users" [queryParams]="{ filter: 'pending' }">
+      <div><b>Aprobar conductores</b><small>{{ stats()?.pending_drivers ?? 0 }} pendientes de aprobación</small></div>
+      @if ((stats()?.pending_drivers ?? 0) > 0) {
+        <span class="count">{{ stats()?.pending_drivers }}</span>
+      }
+      <span class="chev">›</span>
+    </a>
+    <a class="qa" routerLink="/admin/fares">
+      <div><b>Tarifas</b><small>Configura el cobro por viaje</small></div>
+      <span class="chev">›</span>
+    </a>
+    <a class="qa" routerLink="/admin/data/trips">
+      <div><b>Viajes</b><small>Todos los viajes registrados</small></div>
+      <span class="chev">›</span>
+    </a>
+    <a class="qa" routerLink="/admin/data/reports">
+      <div><b>Reportes</b><small>Cancelaciones, ingresos y desempeño</small></div>
+      <span class="chev">›</span>
+    </a>
+    <a class="qa" routerLink="/admin/data/audit-logs">
+      <div><b>Auditoría</b><small>Acciones administrativas y de seguridad</small></div>
+      <span class="chev">›</span>
+    </a>
+
+    <h3 class="section">Resumen</h3>
+    <div class="card">
+      <div class="kv"><span>Viajes activos</span><span>{{ stats()?.active_trips ?? 0 }}</span></div>
+      <div class="kv"><span>Viajes completados</span><span>{{ stats()?.completed_trips ?? 0 }}</span></div>
+      <div class="kv"><span>Viajes cancelados</span><span>{{ stats()?.cancelled_trips ?? 0 }}</span></div>
+      <div class="kv"><span>Solicitudes pendientes</span><span>{{ stats()?.pending_requests ?? 0 }}</span></div>
+      <div class="kv"><span>Ingresos totales</span><span>{{ money(stats()?.total_revenue ?? 0) }}</span></div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-admin-tabs></app-admin-tabs>
+</ion-footer>

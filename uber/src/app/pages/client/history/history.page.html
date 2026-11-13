@@ -1,0 +1,33 @@
+<ion-content>
+  <div class="client-page">
+    <h2 style="font-size: 22px; font-weight: 700">Historial</h2>
+
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    }
+    @for (t of trips(); track t.id) {
+      <div class="trip-row">
+        <div>
+          <b>{{ t.destination_name ?? 'Viaje #' + t.id }}</b>
+          <small>
+            {{ dateLabel(t.completed_at) }}
+            @if (t.driver) { · {{ t.driver.user.name }} }
+            @if (t.vehicle) { · {{ t.vehicle.plate }} }
+          </small>
+        </div>
+                <div class="row-end">
+          <b>{{ money(t.final_fare) }}</b>
+          <a class="mini-link" routerLink="/client/report-user" [queryParams]="{ trip: t.id }">Reportar</a>
+        </div>
+      </div>
+    } @empty {
+      @if (!loading()) {
+        <p class="muted">Aún no tienes viajes.</p>
+      }
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-client-tabs></app-client-tabs>
+</ion-footer>

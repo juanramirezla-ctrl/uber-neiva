@@ -1,0 +1,73 @@
+<ion-content>
+  <div class="client-page">
+    <a class="back" routerLink="/admin/panel">‹ Panel</a>
+    <div class="topbar">
+      <h2 class="sheet-title" style="margin: 0">Tarifas</h2>
+      <button type="button" class="btn-add" (click)="showForm.set(!showForm())">
+        {{ showForm() ? 'Cerrar' : '+ Nueva' }}
+      </button>
+    </div>
+
+    @if (showForm()) {
+      <form class="card vf" [formGroup]="form" (ngSubmit)="save()">
+        <label>Nombre</label>
+        <input class="field" formControlName="name" placeholder="Tarifa Hora Pico" />
+
+        <div class="two">
+          <div>
+            <label>Tarifa base</label>
+            <input class="field" type="number" formControlName="base_fare" />
+          </div>
+          <div>
+            <label>Precio por km</label>
+            <input class="field" type="number" formControlName="price_per_km" />
+          </div>
+        </div>
+        <div class="two">
+          <div>
+            <label>Precio por minuto</label>
+            <input class="field" type="number" formControlName="price_per_minute" />
+          </div>
+          <div>
+            <label>Tarifa mínima</label>
+            <input class="field" type="number" formControlName="minimum_fare" />
+          </div>
+        </div>
+
+        <label>Multiplicador de demanda (mínimo 1)</label>
+        <input class="field" type="number" step="0.1" formControlName="surge_multiplier" />
+
+        <label class="check">
+          <input type="checkbox" formControlName="active" />
+          Activar esta tarifa
+        </label>
+
+        <ion-button expand="block" type="submit" [disabled]="busy()">
+          {{ busy() ? 'Guardando...' : 'Guardar tarifa' }}
+        </ion-button>
+      </form>
+    }
+
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    } @else if (failed()) {
+      <p class="muted">No se pudieron cargar las tarifas. <button type="button" class="mini-link" (click)="load()">Reintentar</button></p>
+    } @else {
+      @for (f of fares(); track $index) {
+        <div class="card">
+          <div class="veh-top">
+            <b>{{ f.name }}</b>
+            <span [class]="'badge ' + (f.active ? 'active' : '')">{{ f.active ? 'Activa' : 'Inactiva' }}</span>
+          </div>
+          <div class="kv"><span>Tarifa base</span><span>{{ money(f.base_fare) }}</span></div>
+          <div class="kv"><span>Por km</span><span>{{ money(f.price_per_km) }}</span></div>
+          <div class="kv"><span>Por minuto</span><span>{{ money(f.price_per_minute) }}</span></div>
+          <div class="kv"><span>Tarifa mínima</span><span>{{ money(f.minimum_fare) }}</span></div>
+          <div class="kv"><span>Multiplicador</span><span>x{{ f.surge_multiplier }}</span></div>
+        </div>
+      } @empty {
+        <p class="muted">Aún no hay tarifas configuradas.</p>
+      }
+    }
+  </div>
+</ion-content>

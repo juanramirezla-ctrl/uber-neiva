@@ -1,0 +1,39 @@
+<ion-content>
+  <div class="client-page">
+    <h2 class="sheet-title">Quejas</h2>
+
+    <div class="chips">
+      <button type="button" class="chip-btn" [class.on]="filter() === 'pending'" (click)="filter.set('pending')">Pendientes</button>
+      <button type="button" class="chip-btn" [class.on]="filter() === 'resolved'" (click)="filter.set('resolved')">Resueltas</button>
+    </div>
+
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    } @else if (failed()) {
+      <p class="muted">No se pudieron cargar las quejas. <button type="button" class="mini-link" (click)="load()">Reintentar</button></p>
+    } @else {
+      @for (i of shown(); track i.key) {
+        <div class="card">
+          <div class="veh-top">
+            <div>
+              <b>{{ i.reporter }} → {{ i.reported }}</b>
+              <small>{{ i.motive }}</small>
+            </div>
+            <span [class]="'badge ' + (isResolved(i.key) ? 'active' : 'warn')">
+              {{ isResolved(i.key) ? 'Resuelta' : 'Pendiente' }}
+            </span>
+          </div>
+          <a class="mini-link" style="color: #111" [routerLink]="['/admin/complaints', i.key]">Ver detalle ›</a>
+        </div>
+      } @empty {
+        <p class="muted">
+          {{ filter() === 'pending' ? 'No hay quejas pendientes.' : 'Aún no has resuelto quejas.' }}
+        </p>
+      }
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-admin-tabs></app-admin-tabs>
+</ion-footer>

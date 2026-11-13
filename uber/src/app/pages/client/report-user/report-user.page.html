@@ -1,0 +1,67 @@
+<ion-content>
+  <div class="client-page vf">
+    <a class="back" routerLink="/client/history">‹ Volver</a>
+    <h2 class="sheet-title">Reportar usuario</h2>
+
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    } @else if (!trips().length) {
+      <div class="card">
+        <p class="muted">
+          Solo puedes reportar a conductores con los que hayas hecho un viaje finalizado.
+        </p>
+      </div>
+    } @else {
+      <div class="card">
+        <div class="person-label">Usuario reportado</div>
+        <div class="person">
+          <div class="avatar sm">{{ initial(current()) }}</div>
+          <div>
+            <b>{{ current()?.driver?.user.name ?? 'Conductor' }}</b>
+            @if (current(); as c) {
+              <small>Viaje del {{ dateLabel(c.completed_at) }}</small>
+            }
+          </div>
+          <span class="chip" style="margin-left: auto">Conductor</span>
+        </div>
+      </div>
+
+      @if (trips().length > 1) {
+        <label>Viaje</label>
+        <select class="field" (change)="tripId.set(+$any($event.target).value)">
+          @for (t of trips(); track t.id) {
+            <option [value]="t.id" [selected]="t.id === tripId()">
+              {{ dateLabel(t.completed_at) }} · {{ t.driver?.user.name ?? 'Conductor' }}
+            </option>
+          }
+        </select>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <label>Motivo</label>
+        <select class="field" formControlName="motive">
+          <option value="" disabled>Selecciona un motivo</option>
+          @for (m of motives; track m) {
+            <option [value]="m">{{ m }}</option>
+          }
+        </select>
+
+        <label>Descripción</label>
+        <textarea class="field" rows="5" formControlName="description" placeholder="Cuéntanos qué ocurrió"></textarea>
+
+        <label>Calificación del viaje</label>
+        <div class="stars">
+          @for (s of [1, 2, 3, 4, 5]; track s) {
+            <button type="button" [class.on]="s <= stars()" (click)="stars.set(s)">★</button>
+          }
+        </div>
+
+        <ion-button expand="block" type="submit" [disabled]="busy()">
+          {{ busy() ? 'Enviando...' : 'Enviar queja' }}
+        </ion-button>
+      </form>
+
+      <p class="note">El administrador revisará tu queja y podrá penalizar o eliminar al usuario.</p>
+    }
+  </div>
+</ion-content>

@@ -1,0 +1,42 @@
+<ion-content>
+  <div class="client-page">
+    <a class="back" routerLink="/admin/panel">‹ Panel</a>
+    <h2 class="sheet-title">{{ title }}</h2>
+
+    @if (kind === 'trips') {
+      <div class="chips">
+        @for (s of statuses; track s.value) {
+          <button type="button" class="chip-btn" [class.on]="status() === s.value" (click)="setStatus(s.value)">
+            {{ s.label }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    } @else if (failed()) {
+      <p class="muted">No se pudo cargar la información. <button type="button" class="mini-link" (click)="load()">Reintentar</button></p>
+    } @else {
+      @if (summary().length) {
+        <div class="card">
+          @for (f of summary(); track $index) {
+            <div class="kv"><span>{{ f.label }}</span><span>{{ f.value }}</span></div>
+          }
+        </div>
+      }
+
+      @for (r of rows(); track $index) {
+        <div class="card">
+          @for (f of r; track $index) {
+            <div class="kv"><span>{{ f.label }}</span><span>{{ f.value }}</span></div>
+          }
+        </div>
+      }
+
+      @if (!summary().length && !rows().length) {
+        <p class="muted">No hay información para mostrar.</p>
+      }
+    }
+  </div>
+</ion-content>

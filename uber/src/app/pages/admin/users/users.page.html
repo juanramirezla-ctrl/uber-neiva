@@ -1,0 +1,82 @@
+<ion-content>
+  <div class="client-page">
+    <h2 class="sheet-title">Usuarios</h2>
+
+    <input
+      class="field"
+      type="text"
+      placeholder="Buscar por nombre o correo"
+      (input)="search.set($any($event.target).value)"
+    />
+
+    <div class="chips">
+      <button type="button" class="chip-btn" [class.on]="filter() === 'all'" (click)="filter.set('all')">Todos</button>
+      <button type="button" class="chip-btn" [class.on]="filter() === 'drivers'" (click)="filter.set('drivers')">Conductores</button>
+      <button type="button" class="chip-btn" [class.on]="filter() === 'clients'" (click)="filter.set('clients')">Pasajeros</button>
+      <button type="button" class="chip-btn" [class.on]="filter() === 'pending'" (click)="filter.set('pending')">
+        Pendientes ({{ pendingCount() }})
+      </button>
+    </div>
+
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    } @else if (failed()) {
+      <p class="muted">No se pudo cargar la lista. <button type="button" class="mini-link" (click)="load()">Reintentar</button></p>
+    } @else if (filter() === 'clients') {
+      <div class="card">
+        <b>{{ clientsTotal() }} pasajeros registrados</b>
+        <p class="muted">
+          El backend no expone un listado de pasajeros. Para verlos aquí, pídele al profesor un
+          endpoint <code>GET /api/admin/clients</code>.
+        </p>
+      </div>
+    } @else {
+      @for (d of list(); track d.id) {
+        <div class="user-row" (click)="toggle(d.id)">
+          <div class="avatar sm">{{ d.user.name.charAt(0) }}</div>
+          <div class="info">
+            <b>{{ d.user.name }}</b>
+            <small>Conductor</small>
+          </div>
+          <span [class]="'badge ' + statusClass(d.approval_status)">{{ statusLabel(d.approval_status) }}</span>
+        </div>
+
+        @if (expanded() === d.id) {
+          <div class="detail">
+            <div class="kv"><span>Correo</span><span>{{ d.user.email }}</span></div>
+            @if (d.user.phone) {
+              <div class="kv"><span>Teléfono</span><span>{{ d.user.phone }}</span></div>
+            }
+            @if (d.license_number) {
+              <div class="kv"><span>Licencia</span><span>{{ d.license_number }}</span></div>
+            }
+            @if (d.rating_average != null) {
+              <div class="kv"><span>Calificación</span><span>★ {{ d.rating_average }}</span></div>
+            }
+            @for (v of d.vehicles ?? []; track v.plate) {
+              <div class="kv"><span>Vehículo</span><span>{{ v.brand }} {{ v.model }} · {{ v.plate }}</span></div>
+            }
+
+            <div class="btn-row" style="margin-top: 10px">
+              @if (d.approval_status === 'pending') {
+                <ion-button color="success" (click)="change(d, 'approved')">Aprobar</ion-button>
+                <ion-button color="danger" (click)="change(d, 'rejected')">Rechazar</ion-button>
+              } @else if (d.approval_status === 'approved') {
+                <ion-button color="warning" (click)="change(d, 'suspended')">Penalizar</ion-button>
+                <ion-button color="danger" (click)="change(d, 'rejected')">Rechazar</ion-button>
+              } @else {
+                <ion-button color="success" (click)="change(d, 'approved')">Reactivar</ion-button>
+              }
+            </div>
+          </div>
+        }
+      } @empty {
+        <p class="muted">No hay usuarios para mostrar.</p>
+      }
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <app-admin-tabs></app-admin-tabs>
+</ion-footer>
